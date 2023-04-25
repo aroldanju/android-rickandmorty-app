@@ -76,4 +76,26 @@ class CharactersDaoTest {
             charactersPage.map { it.name }.toList()
         )
     }
+
+    @Test
+    fun givenFavouriteCharactersList_whenGetFavouriteCharactersList_thenFetchFavouriteCharactersList() {
+        // Given
+        val characters = listOf(
+            provideCharacter(id = 1, name = "Name #1", url = "url/1", image = "image/1", location = provideLocation(id = 1, url = "location/1"), page = 1, isFavorite = true),
+            provideCharacter(id = 2, name = "Name #2", url = "url/2", image = "image/2", location = provideLocation(id = 1, url = "location/1"), page = 1, isFavorite = true),
+            provideCharacter(id = 3, name = "Name #3", url = "url/3", image = "image/3", location = provideLocation(id = 1, url = "location/1"), page = 1, isFavorite = true),
+            provideCharacter(id = 4, name = "Name #4", url = "url/4", image = "image/4", location = provideLocation(id = 2, url = "location/2"), page = 1, isFavorite = false)
+        )
+
+        for (character in characters) {
+            charactersDao.insertCharacter(character)
+        }
+
+        val charactersPage = charactersDao.getFavouriteCharacters()
+
+        Assert.assertEquals(
+            listOf("Name #1", "Name #2", "Name #3"),
+            charactersPage.map { it.name }.toList()
+        )
+    }
 }

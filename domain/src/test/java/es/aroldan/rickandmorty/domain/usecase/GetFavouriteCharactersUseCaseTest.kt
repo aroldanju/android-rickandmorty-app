@@ -16,12 +16,12 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import org.junit.Before
 import org.junit.Test
 
-class GetCharactersPageUseCaseTest {
+class GetFavouriteCharactersUseCaseTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher: CoroutineDispatcher = StandardTestDispatcher()
 
-    private lateinit var getCharactersPageUseCaseTested: GetCharactersPageUseCase
+    private lateinit var getFavouriteCharactersUseCaseTested: GetFavouriteCharactersUseCase
 
     @RelaxedMockK private lateinit var characterRepository: CharacterRepositoryContract
 
@@ -29,31 +29,31 @@ class GetCharactersPageUseCaseTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        getCharactersPageUseCaseTested = GetCharactersPageUseCase(
+        getFavouriteCharactersUseCaseTested = GetFavouriteCharactersUseCase(
             characterRepository = characterRepository,
             dispatcher = dispatcher
         )
     }
 
     @Test
-    fun `when get characters page then fetch characters page from repository`() {
-        val charactersPage: List<Character> = listOf(
-            Character(id = 0, name = "Name #0", avatar = null, locationId = null, isFavourite = false, status = CharacterStatus.ALIVE),
-            Character(id = 1, name = "Name #1", avatar = "avatar-1", locationId = null, isFavourite = false, status = CharacterStatus.ALIVE),
+    fun `when get favourite characters then fetch favourite characters from repository`() {
+        val characters: List<Character> = listOf(
+            Character(id = 0, name = "Name #0", avatar = null, locationId = null, isFavourite = true, status = CharacterStatus.ALIVE),
+            Character(id = 1, name = "Name #1", avatar = "avatar-1", locationId = null, isFavourite = true, status = CharacterStatus.ALIVE),
             Character(id = 2, name = "Name #2", avatar = "avatar-2", locationId = 0, isFavourite = true, status = CharacterStatus.ALIVE),
         )
 
-        coEvery { characterRepository.fetchCharacters(any()) } answers {
+        coEvery { characterRepository.fetchFavouriteCharacters() } answers {
             flowOf(DataResult.Success(
-                charactersPage
+                characters
             ))
         }
 
         runBlocking {
-            getCharactersPageUseCaseTested(1)
+            getFavouriteCharactersUseCaseTested()
 
             coVerify(exactly = 1) {
-                characterRepository.fetchCharacters(any())
+                characterRepository.fetchFavouriteCharacters()
             }
         }
     }
