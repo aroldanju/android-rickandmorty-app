@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+    <!ENTITY scheme "rickandmorty">
+    ]>
+<resources>
+    <string name="app_name"><![CDATA[Rick & Morty]]></string>
+    <string name="uri_character_list">&scheme;://characters</string>
+    <string name="uri_character_detail">&scheme;://characters/{character_id}</string>
+    <string name="error_unknown">Unknown error</string>
+    <string name="error_no_internet_connection">No internet connection</string>
+    <string name="origin_format">Origin: %s</string>
+    <string name="show_favourites">Show favourites</string>
+    <string name="characters">Characters</string>
+    <string name="no_results">Sin resultados :(</string>
+    <string name="status_alive">Alive</string>
+    <string name="status_dead">Dead</string>
+    <string name="status_unknown">Unknown</string>
+    <string name="status">Status:</string>
+</resources>

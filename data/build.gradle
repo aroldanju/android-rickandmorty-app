@@ -1,0 +1,45 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id "org.jetbrains.kotlin.kapt"
+}
+
+android {
+    namespace 'es.aroldan.rickandmorty.data'
+    compileSdk 33
+
+    defaultConfig {
+        minSdk 24
+        targetSdk 33
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+apply from: "${rootDir}/configuration/dependency/di.gradle"
+apply from: "${rootDir}/configuration/dependency/network.gradle"
+apply from: "${rootDir}/configuration/dependency/test_unit.gradle"
+apply from: "${rootDir}/configuration/dependency/database.gradle"
+apply from: "${rootDir}/configuration/dependency/test_instrumentation.gradle"
+
+dependencies {
+    implementation "androidx.core:core-ktx:$versions.androidx_core"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines"
+
+    implementation project(':domain')
+}

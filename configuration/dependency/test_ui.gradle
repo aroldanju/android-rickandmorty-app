@@ -1,0 +1,5 @@
+dependencies {
+    androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso"
+    debugImplementation "androidx.fragment:fragment-testing:$versions.test_fragment"
+
+}

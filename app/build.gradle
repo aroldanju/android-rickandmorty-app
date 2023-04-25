@@ -1,0 +1,55 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id "org.jetbrains.kotlin.kapt"
+}
+
+android {
+    namespace 'es.aroldan.rickandmorty'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "es.aroldan.rickandmorty"
+        minSdk 24
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    buildFeatures {
+        dataBinding = true
+        viewBinding = true
+    }
+}
+
+apply from: "${rootDir}/configuration/dependency/di.gradle"
+apply from: "${rootDir}/configuration/dependency/database.gradle"
+apply from: "${rootDir}/configuration/dependency/network.gradle"
+apply from: "${rootDir}/configuration/dependency/test_unit.gradle"
+
+dependencies {
+    implementation "androidx.core:core-ktx:$versions.androidx_core"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.androidx_lifecycle"
+
+    implementation "com.jakewharton.timber:timber:$versions.timber"
+
+    implementation project(':presentation')
+    implementation project(':domain')
+    implementation project(':data')
+}
