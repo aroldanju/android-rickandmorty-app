@@ -1,10 +1,7 @@
 package es.aroldan.rickandmorty.presentation.screen.detail
 
 import androidx.lifecycle.SavedStateHandle
-import es.aroldan.rickandmorty.domain.model.Character
-import es.aroldan.rickandmorty.domain.model.DataResult
-import es.aroldan.rickandmorty.domain.model.DefinedError
-import es.aroldan.rickandmorty.domain.model.Location
+import es.aroldan.rickandmorty.domain.model.*
 import es.aroldan.rickandmorty.domain.usecase.GetCharacterUseCase
 import es.aroldan.rickandmorty.domain.usecase.GetLocationUseCase
 import es.aroldan.rickandmorty.domain.usecase.ToggleFavouriteCharacterUseCase
@@ -80,10 +77,10 @@ class CharacterDetailViewModelTest {
     @Test
     fun `when get character getting success response then update character`() = runTest(dispatcher) {
         coEvery { getCharacterUseCase(any()) } answers {
-            flowOf(DataResult.Success(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false)))
+            flowOf(DataResult.Success(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = CharacterStatus.ALIVE)))
         }
         every { characterViewMapper.map(any() as Character) } answers {
-            CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false)
+            CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = 0, statusIndicatorColor = 0)
         }
 
         val job = characterDetailViewModelTested.uiState.launchIn(this)
@@ -91,7 +88,7 @@ class CharacterDetailViewModelTest {
         characterDetailViewModelTested.started()
 
         Assert.assertEquals(
-            UiState.Content<Pair<CharacterView, LocationView?>>(CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false) to null),
+            UiState.Content<Pair<CharacterView, LocationView?>>(CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = 0, statusIndicatorColor = 0) to null),
             characterDetailViewModelTested.uiState.value
         )
 
@@ -101,10 +98,10 @@ class CharacterDetailViewModelTest {
     @Test
     fun `when get location getting success response then update location`() = runTest(dispatcher) {
         coEvery { getCharacterUseCase(any()) } answers {
-            flowOf(DataResult.Success(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false)))
+            flowOf(DataResult.Success(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = CharacterStatus.ALIVE)))
         }
         every { characterViewMapper.map(any() as Character) } answers {
-            CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = 0, isFavourite = false)
+            CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = 0, isFavourite = false, status = 0, statusIndicatorColor = 0)
         }
 
         coEvery { getLocationUseCase(any()) } answers {
@@ -121,7 +118,7 @@ class CharacterDetailViewModelTest {
         Assert.assertEquals(
             UiState.Content(
                 Pair<CharacterView, LocationView?>(
-                    CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = 0, isFavourite = false),
+                    CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = 0, isFavourite = false, status = 0, statusIndicatorColor = 0),
                     LocationView(name = "Location", dimension = "unknown"))),
             characterDetailViewModelTested.uiState.value
         )
@@ -132,12 +129,12 @@ class CharacterDetailViewModelTest {
     @Test
     fun `when get character with null location id then ignore location`() = runTest(dispatcher) {
         coEvery { getCharacterUseCase(any()) } answers {
-            flowOf(DataResult.Success(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false)))
+            flowOf(DataResult.Success(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = CharacterStatus.ALIVE)))
         }
         every { characterViewMapper.map(any() as Character) } answers {
             CharacterView(id = 0, name = "Name", avatar = "Avatar",
                 locationId = null, // null location id
-                isFavourite = false
+                isFavourite = false, status = 0, statusIndicatorColor = 0
             )
         }
 
@@ -155,7 +152,7 @@ class CharacterDetailViewModelTest {
         Assert.assertEquals(
             UiState.Content(
                 Pair<CharacterView, LocationView?>(
-                    CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false),
+                    CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = 0, statusIndicatorColor = 0),
                     null)),
             characterDetailViewModelTested.uiState.value
         )
@@ -184,10 +181,10 @@ class CharacterDetailViewModelTest {
         val error = DefinedError.Unknown(Throwable())
 
         coEvery { getCharacterUseCase(any()) } answers {
-            flowOf(DataResult.Success(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false)))
+            flowOf(DataResult.Success(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = CharacterStatus.ALIVE)))
         }
         every { characterViewMapper.map(any() as Character) } answers {
-            CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = 0, isFavourite = false)
+            CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = 0, isFavourite = false, status = 0, statusIndicatorColor = 0)
         }
 
         coEvery { getLocationUseCase(any()) } answers {
@@ -212,10 +209,10 @@ class CharacterDetailViewModelTest {
 
         // Fill character
         coEvery { getCharacterUseCase(any()) } answers {
-            flowOf(DataResult.Success(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false)))
+            flowOf(DataResult.Success(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = CharacterStatus.ALIVE)))
         }
         every { characterViewMapper.map(any() as Character) } answers {
-            CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = true)
+            CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = true, status = 0, statusIndicatorColor = 0)
         }
         characterDetailViewModelTested.started()
 
@@ -230,24 +227,24 @@ class CharacterDetailViewModelTest {
     @Test
     fun `when toggle favourite status getting success response then update character`() = runTest(dispatcher) {
         coEvery { toggleFavouriteCharacterUseCase(any(), any()) } answers {
-            flowOf(DataResult.Success(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false)))
+            flowOf(DataResult.Success(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = CharacterStatus.ALIVE)))
         }
         every { characterViewMapper.map(any() as Character) } answers {
-            CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = true)
+            CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = true, status = 0, statusIndicatorColor = 0)
         }
 
         val job = characterDetailViewModelTested.uiState.launchIn(this)
 
         // Fill character
         coEvery { getCharacterUseCase(any()) } answers {
-            flowOf(DataResult.Success(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false)))
+            flowOf(DataResult.Success(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = CharacterStatus.ALIVE)))
         }
         characterDetailViewModelTested.started()
 
         characterDetailViewModelTested.toggleFavourite()
 
         Assert.assertEquals(
-            UiState.Content<Pair<CharacterView, LocationView?>>(CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = true) to null),
+            UiState.Content<Pair<CharacterView, LocationView?>>(CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = true, status = 0, statusIndicatorColor = 0) to null),
             characterDetailViewModelTested.uiState.value
         )
 

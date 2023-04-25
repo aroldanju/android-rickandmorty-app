@@ -13,6 +13,7 @@ import es.aroldan.rickandmorty.data.mapper.CharacterLocalEntityMapper
 import es.aroldan.rickandmorty.data.mapper.CharacterSourceEntityMapper
 import es.aroldan.rickandmorty.domain.ErrorHandlerContract
 import es.aroldan.rickandmorty.domain.model.Character
+import es.aroldan.rickandmorty.domain.model.CharacterStatus
 import es.aroldan.rickandmorty.domain.model.DataResult
 import es.aroldan.rickandmorty.domain.model.DefinedError
 import es.aroldan.rickandmorty.domain.repository.CharacterRepositoryContract
@@ -54,7 +55,7 @@ class CharacterRepositoryTest {
     @Test
     fun `given local characters page when fetch characters page then fetch characters page from local data source`() {
         every { characterLocalEntityMapper.map(any() as List<CharacterLocalEntity>) } returns
-                listOf(Character(id = 0, name = "Name", avatar = "avatar", locationId = 0, isFavourite = false))
+                listOf(Character(id = 0, name = "Name", avatar = "avatar", locationId = 0, isFavourite = false, status = CharacterStatus.ALIVE))
 
         // Given
         coEvery { localDataSource.getCharactersPage(any()) } returns
@@ -66,7 +67,7 @@ class CharacterRepositoryTest {
             val flow = characterRepositoryTested.fetchCharacters(1)
 
             Assert.assertEquals(
-                DataResult.Success(listOf(Character(name = "Name", id = 0, avatar = "avatar", locationId = 0, isFavourite = false))),
+                DataResult.Success(listOf(Character(name = "Name", id = 0, avatar = "avatar", locationId = 0, isFavourite = false, status = CharacterStatus.ALIVE))),
                 flow.first()
             )
         }
@@ -77,7 +78,7 @@ class CharacterRepositoryTest {
         coEvery { localDataSource.getCharactersPage(any()) } returns emptyList()
 
         every { characterEntityMapper.map(any() as List<CharacterEntity>) } returns
-                listOf(Character(id = 0, name = "Name", avatar = "image", locationId = 0, isFavourite = false))
+                listOf(Character(id = 0, name = "Name", avatar = "image", locationId = 0, isFavourite = false, status = CharacterStatus.ALIVE))
 
         coEvery { remoteDataSource.fetchCharacters(any()) } returns
                 CharactersPageEntity(
@@ -92,7 +93,7 @@ class CharacterRepositoryTest {
         coEvery { localDataSource.getCharacter(any()) } returns
                 CharacterLocalEntity(id = 0, page = 1, isFavorite = false, name = "Name", url = "url", location = LocationLocalEntity(id = 0, name = "Name", url = "Url", dimension = "unknown"), image = "image")
         every { characterLocalEntityMapper.map(any() as CharacterLocalEntity) } returns
-                Character(id = 0, name = "Name", avatar = "image", locationId = 0, isFavourite = false)
+                Character(id = 0, name = "Name", avatar = "image", locationId = 0, isFavourite = false, status = CharacterStatus.ALIVE)
         every { characterSourceEntityMapper.map(any() as CharacterEntity) } returns
                 CharacterLocalEntity(id = 0, page = 1, isFavorite = false, name = "Name", url = "url", location = LocationLocalEntity(id = 0, name = "Name", url = "Url", dimension = "unknown"), image = "image")
 
@@ -110,7 +111,7 @@ class CharacterRepositoryTest {
         coEvery { localDataSource.getCharactersPage(any()) } returns emptyList()
 
         every { characterEntityMapper.map(any() as List<CharacterEntity>) } returns
-                listOf(Character(id = 0, name = "Name", avatar = "image", locationId = 0, isFavourite = false))
+                listOf(Character(id = 0, name = "Name", avatar = "image", locationId = 0, isFavourite = false, status = CharacterStatus.ALIVE))
 
         coEvery { remoteDataSource.fetchCharacters(any()) } returns
                 CharactersPageEntity(

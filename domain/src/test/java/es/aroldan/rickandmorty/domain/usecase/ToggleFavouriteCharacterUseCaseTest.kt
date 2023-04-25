@@ -2,6 +2,7 @@ package es.aroldan.rickandmorty.domain.usecase
 
 import es.aroldan.rickandmorty.domain.model.DataResult
 import es.aroldan.rickandmorty.domain.model.Character
+import es.aroldan.rickandmorty.domain.model.CharacterStatus
 import es.aroldan.rickandmorty.domain.repository.CharacterRepositoryContract
 import es.aroldan.rickandmorty.domain.repository.LocationRepositoryContract
 import io.mockk.MockKAnnotations
@@ -37,7 +38,7 @@ class ToggleFavouriteCharacterUseCaseTest {
 
     @Test
     fun `given a fav status when set favourite then call set favourite from repository with opposite status`() {
-        val character = Character(id = 0, name = "Name", avatar = null, locationId = null, isFavourite = false)
+        val character = Character(id = 0, name = "Name", avatar = null, locationId = null, isFavourite = false, status = CharacterStatus.ALIVE)
 
         coEvery { characterRepository.setFavouriteCharacter(any(), any()) } answers {
             flowOf(DataResult.Success(

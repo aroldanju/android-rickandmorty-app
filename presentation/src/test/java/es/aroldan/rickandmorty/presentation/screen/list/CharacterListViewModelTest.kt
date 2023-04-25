@@ -2,6 +2,7 @@ package es.aroldan.rickandmorty.presentation.screen.list
 
 import es.aroldan.rickandmorty.domain.model.DataResult
 import es.aroldan.rickandmorty.domain.model.Character
+import es.aroldan.rickandmorty.domain.model.CharacterStatus
 import es.aroldan.rickandmorty.domain.model.DefinedError
 import es.aroldan.rickandmorty.domain.usecase.GetCharactersPageUseCase
 import es.aroldan.rickandmorty.domain.usecase.GetFavouriteCharactersUseCase
@@ -76,10 +77,10 @@ class CharacterListViewModelTest {
     @Test
     fun `when get characters page getting success response then set loading state to false`() = runTest {
         coEvery { getCharactersPageUseCase(any()) } answers {
-            flowOf(DataResult.Success(listOf(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false))))
+            flowOf(DataResult.Success(listOf(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = CharacterStatus.ALIVE))))
         }
         every { characterViewMapper.map(any() as List<Character>) } answers {
-            listOf(CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false))
+            listOf(CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = 0, statusIndicatorColor = 0))
         }
 
         characterListViewModelTested.onStarted()
@@ -107,16 +108,16 @@ class CharacterListViewModelTest {
     @Test
     fun `when get characters page getting success response then update characters`() = runTest {
         coEvery { getCharactersPageUseCase(any()) } answers {
-            flowOf(DataResult.Success(listOf(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false))))
+            flowOf(DataResult.Success(listOf(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = CharacterStatus.ALIVE))))
         }
         every { characterViewMapper.map(any() as List<Character>) } answers {
-            listOf(CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false))
+            listOf(CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = 0, statusIndicatorColor = 0))
         }
 
         characterListViewModelTested.onStarted()
 
         Assert.assertEquals(
-            listOf(CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false)),
+            listOf(CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = 0, statusIndicatorColor = 0)),
             characterListViewModelTested.characters.value
         )
     }
@@ -140,7 +141,7 @@ class CharacterListViewModelTest {
     @Test
     fun `when character clicked then send navigate event`() = runTest {
         characterListViewModelTested.characterClicked(
-            CharacterView(id = 6540, name = "Name", avatar = "avatar", locationId = null, isFavourite = false)
+            CharacterView(id = 6540, name = "Name", avatar = "avatar", locationId = null, isFavourite = false, status = 0, statusIndicatorColor = 0)
         )
 
         Assert.assertEquals(
@@ -163,10 +164,10 @@ class CharacterListViewModelTest {
     @Test
     fun `given favourite filter enabled when get characters page getting success response then ignore`() = runTest {
         coEvery { getCharactersPageUseCase(any()) } answers {
-            flowOf(DataResult.Success(listOf(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false))))
+            flowOf(DataResult.Success(listOf(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = CharacterStatus.ALIVE))))
         }
         every { characterViewMapper.map(any() as List<Character>) } answers {
-            listOf(CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false))
+            listOf(CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = 0, statusIndicatorColor = 0))
         }
 
         // Given
@@ -184,16 +185,16 @@ class CharacterListViewModelTest {
     @Test
     fun `when enable favourite filter then call get favourite characters`() = runTest {
         coEvery { getFavouriteCharactersUseCase() } answers {
-            flowOf(DataResult.Success(listOf(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false))))
+            flowOf(DataResult.Success(listOf(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = CharacterStatus.ALIVE))))
         }
         every { characterViewMapper.map(any() as List<Character>) } answers {
-            listOf(CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = true))
+            listOf(CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = true, statusIndicatorColor = 0, status = 0))
         }
 
         characterListViewModelTested.toggleFavouriteFilter()
 
         Assert.assertEquals(
-            listOf(CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = true)),
+            listOf(CharacterView(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = true, status = 0, statusIndicatorColor = 0)),
             characterListViewModelTested.characters.value
         )
     }
@@ -201,14 +202,14 @@ class CharacterListViewModelTest {
     @Test
     fun `when disable favourite filter then call get all characters`() = runTest {
         coEvery { getCharactersPageUseCase(any()) } answers {
-            flowOf(DataResult.Success(listOf(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false))))
+            flowOf(DataResult.Success(listOf(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = CharacterStatus.ALIVE))))
         }
 
         coEvery { getFavouriteCharactersUseCase() } answers {
-            flowOf(DataResult.Success(listOf(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false))))
+            flowOf(DataResult.Success(listOf(Character(id = 0, name = "Name", avatar = "Avatar", locationId = null, isFavourite = false, status = CharacterStatus.ALIVE))))
         }
         every { characterViewMapper.map(any() as List<Character>) } answers {
-            listOf(CharacterView(id = 0, name = "Fetched from page", avatar = "Avatar", locationId = null, isFavourite = true))
+            listOf(CharacterView(id = 0, name = "Fetched from page", avatar = "Avatar", locationId = null, isFavourite = true, status = 0, statusIndicatorColor = 0))
         }
 
         characterListViewModelTested.onStarted()
@@ -217,7 +218,7 @@ class CharacterListViewModelTest {
         characterListViewModelTested.toggleFavouriteFilter()    // Disable filter
 
         Assert.assertEquals(
-            listOf(CharacterView(id = 0, name = "Fetched from page", avatar = "Avatar", locationId = null, isFavourite = true)),
+            listOf(CharacterView(id = 0, name = "Fetched from page", avatar = "Avatar", locationId = null, isFavourite = true, status = 0, statusIndicatorColor = 0)),
             characterListViewModelTested.characters.value
         )
     }

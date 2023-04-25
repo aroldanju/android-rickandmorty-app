@@ -3,6 +3,7 @@ package es.aroldan.rickandmorty.data.mapper
 import es.aroldan.rickandmorty.data.datasource.local.model.CharacterLocalEntity
 import es.aroldan.rickandmorty.data.datasource.local.model.LocationLocalEntity
 import es.aroldan.rickandmorty.domain.model.Character
+import es.aroldan.rickandmorty.domain.model.CharacterStatus
 import org.junit.Assert
 import org.junit.Test
 
@@ -16,17 +17,17 @@ class CharacterLocalEntityMapperTest {
     @Test
     fun `transform character entity to local character model`() {
         val input = listOf(
-            CharacterLocalEntity(id = 0, name = "Name #1", url = "http://url", image = "Image", page = 1, isFavorite = false, location = provideLocationLocalEntity()),
-            CharacterLocalEntity(id = 1, name = "Name #2", url = "http://url/1", image = "Image", page = null, isFavorite = true, location = provideLocationLocalEntity(url = "url/1")),
-            CharacterLocalEntity(id = 2, name = "Name #3", url = "http://url", image = null, page = null, isFavorite = false, location = provideLocationLocalEntity()),
-            CharacterLocalEntity(id = 3, name = "Name #4", url = "http://url", image = null, page = null, isFavorite = true, location = provideLocationLocalEntity(url = "url/location")),
+            CharacterLocalEntity(id = 0, name = "Name #1", url = "http://url", image = "Image", page = 1, isFavorite = false, location = provideLocationLocalEntity(), status = "alive"),
+            CharacterLocalEntity(id = 1, name = "Name #2", url = "http://url/1", image = "Image", page = null, isFavorite = true, location = provideLocationLocalEntity(url = "url/1"), status = "DEAD"),
+            CharacterLocalEntity(id = 2, name = "Name #3", url = "http://url", image = null, page = null, isFavorite = false, location = provideLocationLocalEntity(), status = "??"),
+            CharacterLocalEntity(id = 3, name = "Name #4", url = "http://url", image = null, page = null, isFavorite = true, location = provideLocationLocalEntity(url = "url/location"), status = ""),
         )
 
         val expected = listOf(
-            Character(id = 0, name = "Name #1", avatar = "Image", locationId = null, isFavourite = false),
-            Character(id = 1, name = "Name #2", avatar = "Image", locationId = 1, isFavourite = true),
-            Character(id = 2, name = "Name #3", avatar = null, locationId = null, isFavourite = false),
-            Character(id = 3, name = "Name #4", avatar = null, locationId = null, isFavourite = true)
+            Character(id = 0, name = "Name #1", avatar = "Image", locationId = null, isFavourite = false, status = CharacterStatus.ALIVE),
+            Character(id = 1, name = "Name #2", avatar = "Image", locationId = 1, isFavourite = true, status = CharacterStatus.DEAD),
+            Character(id = 2, name = "Name #3", avatar = null, locationId = null, isFavourite = false, status = CharacterStatus.UNKNOWN),
+            Character(id = 3, name = "Name #4", avatar = null, locationId = null, isFavourite = true, status = CharacterStatus.UNKNOWN),
         )
 
         val output = characterLocalEntityMapperTested.map(input)

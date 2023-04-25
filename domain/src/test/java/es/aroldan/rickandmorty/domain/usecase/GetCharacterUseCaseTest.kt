@@ -1,6 +1,7 @@
 package es.aroldan.rickandmorty.domain.usecase
 
 import es.aroldan.rickandmorty.domain.model.Character
+import es.aroldan.rickandmorty.domain.model.CharacterStatus
 import es.aroldan.rickandmorty.domain.model.DataResult
 import es.aroldan.rickandmorty.domain.repository.CharacterRepositoryContract
 import io.mockk.MockKAnnotations
@@ -36,7 +37,7 @@ class GetCharacterUseCaseTest {
 
     @Test
     fun `when get characters page then fetch characters page from repository`() {
-        val character = Character(id = 0, name = "Name #0", avatar = null, locationId = 1, isFavourite = false)
+        val character = Character(id = 0, name = "Name #0", avatar = null, locationId = 1, isFavourite = false, status = CharacterStatus.ALIVE)
 
         coEvery { characterRepository.fetchCharacter(any()) } answers {
             flowOf(DataResult.Success(
